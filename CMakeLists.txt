@@ -4,6 +4,7 @@ project(antlr4_vba_benchmark)
 set(CMAKE_CXX_STANDARD 17)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+add_definitions(-DANTLR4CPP_STATIC)
 set(ANTLR4_WITH_STATIC_CRT OFF)
 set(ANTLR4_TAG 4.13.1)
 include(ExternalAntlr4Cpp)
