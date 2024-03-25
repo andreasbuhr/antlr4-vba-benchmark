@@ -56,7 +56,12 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: ./antlr4_vba_benchmark
 
-    - name: Execute on Windows
-      if: ${{ runner.os == 'Windows' }}
+    - name: Execute Release on Windows
+      if: ${{ runner.os == 'Windows' && matrix.build_type == 'Release' }}
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: dir x64
+      run: dir x64/Release
+
+    - name: Execute Debug on Windows
+      if: ${{ runner.os == 'Windows' && matrix.build_type == 'Release' }}
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: dir x64/Debug
