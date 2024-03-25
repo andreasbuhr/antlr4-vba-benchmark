@@ -59,9 +59,9 @@ jobs:
     - name: Execute Release on Windows
       if: ${{ runner.os == 'Windows' && matrix.build_type == 'Release' }}
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: dir x64/Release
+      run: find
 
     - name: Execute Debug on Windows
-      if: ${{ runner.os == 'Windows' && matrix.build_type == 'Release' }}
+      if: ${{ runner.os == 'Windows' && matrix.build_type == 'Debug' }}
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: dir x64/Debug
+      run: find
