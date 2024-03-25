@@ -51,7 +51,12 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    - name: Execute
+    - name: Execute on Linux
+      if: ${{ runner.os == 'Linux' }}
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      shell: bash
       run: ./antlr4_vba_benchmark
+
+    - name: Execute on Windows
+      if: ${{ runner.os == 'Windows' }}
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: antlr4_vba_benchmark.exe
