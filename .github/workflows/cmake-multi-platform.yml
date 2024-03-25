@@ -59,4 +59,4 @@ jobs:
     - name: Execute on Windows
       if: ${{ runner.os == 'Windows' }}
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: ./antlr4_vba_benchmark.exe
+      run: dir
