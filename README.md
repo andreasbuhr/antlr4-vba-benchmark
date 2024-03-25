@@ -6,10 +6,10 @@ subfolder using the VBA grammar from the 'Rubberduck' project.
 
 Runtimes measured on Github Actions are approximately
 
-| | Windows | Linux |
-|-|--|--|
-|Release| 4.8s | 3.5s |
-|Debug|46.5s| 29.7s|
+|          | Windows | Linux |
+|----------|---------|-------|
+| Release  | 4.8s    | 3.5s  |
+| Debug    | 46.5s   | 29.7s |
 
 Even the fastest time: 3.5 seconds for 600 lines of code,
 is pretty slow.
