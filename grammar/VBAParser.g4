@@ -23,8 +23,8 @@ parser grammar VBAParser;
 
 options {
     tokenVocab = VBALexer;
-    superClass = VBABaseParser;
-    contextSuperClass = VBABaseParserRuleContext;
+    //superClass = VBABaseParser;
+    //contextSuperClass = VBABaseParserRuleContext;
  }
 
 startRule : module EOF;
@@ -330,14 +330,14 @@ defType :
 // singleLetter must appear at the end to prevent premature bailout
 letterSpec : universalLetterRange | letterRange | singleLetter;
 
-singleLetter : {MatchesRegex(TextOf(TokenAtRelativePosition(1)),"^[a-zA-Z]$")}? IDENTIFIER;
+singleLetter :  IDENTIFIER;
 
 // We make a separate universalLetterRange rule because it is treated specially in VBA. This makes it easy for users of the parser
 // to identify this case. Quoting MS VBAL:
 // "A <universal-letter-range> defines a single implicit declared type for every <IDENTIFIER> within 
 // a module, even those with a first character that would otherwise fall outside this range if it was 
 // interpreted as a <letter-range> from A-Z.""
-universalLetterRange : {EqualsString(TextOf(TokenAtRelativePosition(1)),"A") && EqualsString(TextOf(TokenAtRelativePosition(3)),"Z")}? IDENTIFIER MINUS IDENTIFIER;
+universalLetterRange : IDENTIFIER MINUS IDENTIFIER;
  
 letterRange : singleLetter MINUS singleLetter;
 
@@ -590,10 +590,10 @@ circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace 
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
 pSetSpecialForm : (expression whiteSpace? DOT whiteSpace?)? PSET (whiteSpace STEP)? whiteSpace? tuple whiteSpace? (COMMA whiteSpace? expression)?;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;
-lineSpecialFormOption : {EqualsStringIgnoringCase(TextOf(TokenAtRelativePosition(1)),"b","bf")}? unrestrictedIdentifier;
+lineSpecialFormOption : unrestrictedIdentifier;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
-legalLabelIdentifier : { !IsTokenType(TokenTypeAtRelativePosition(1),DOEVENTS,END,CLOSE,ELSE,LOOP,NEXT,RANDOMIZE,REM,RESUME,RETURN,STOP,WEND)}? identifier | markerKeyword;
+legalLabelIdentifier :  identifier | markerKeyword;
 //The predicate in the following rule has been introduced to lessen the problem that VBA uses the same characters used as type hints in other syntactical constructs, 
 //e.g. in the bang notation (see withDictionaryAccessExpr). Generally, it is not legal to have an identifier or opening bracket follow immediately after a type hint.
 //The first part of the predicate tries to exclude these two situations. Unfortunately, predicates have to be at the start of a rule. So, an assumption about the number 
@@ -601,7 +601,7 @@ legalLabelIdentifier : { !IsTokenType(TokenTypeAtRelativePosition(1),DOEVENTS,EN
 //again a single token. So, in the majority of situations, the third token is the token following the potential type hint. 
 //For foreignNames, no assumption can be made because they consist of a pair of brackets containing arbitrarily many tokens. 
 //That is why the second part of the predicate looks at the first character in order to determine whether the identifier is a foreignName. 
-identifier : {!IsTokenType(TokenTypeAtRelativePosition(3),IDENTIFIER,L_SQUARE_BRACKET) || IsTokenType(TokenTypeAtRelativePosition(1),L_SQUARE_BRACKET)}? typedIdentifier
+identifier :  typedIdentifier
              | untypedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : untypedIdentifier typeHint;
@@ -629,7 +629,7 @@ complexType :
 fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
 //Statement labels can only appear at the start of a line.
-statementLabelDefinition : {IsTokenType(TokenTypeAtRelativePosition(-1),NEWLINE,LINE_CONTINUATION)}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
+statementLabelDefinition : (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
 identifierStatementLabel : legalLabelIdentifier whiteSpace? COLON;
 standaloneLineNumberLabel : 
     lineNumberLabel whiteSpace? COLON
@@ -671,7 +671,7 @@ expression :
     | expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
     | expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
     | literalExpression                                                                             # literalExpr
-    | {!IsTokenType(TokenTypeAtRelativePosition(2),LPAREN)}? builtInType                            # builtInTypeExpr
+    | builtInType                            # builtInTypeExpr
     | lExpression                                                                                   # lExpr
 ;
 
@@ -936,7 +936,7 @@ endOfLine :
 // We expect endOfStatement to consume all trailing whitespace blank statements.
 // We have to special case the end of file since infiniftly mant EOF tokens can be consumed at the end of file.
 endOfStatement :
-    individualNonEOFEndOfStatement+ | whiteSpace? EOF
+    individualNonEOFEndOfStatement+ //| whiteSpace? EOF
 ;
 
 // we expect endOfStatement to consume all trailing whitespace
