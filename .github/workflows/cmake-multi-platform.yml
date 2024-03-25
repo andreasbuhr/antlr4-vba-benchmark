@@ -59,9 +59,9 @@ jobs:
     - name: Execute Release on Windows
       if: ${{ runner.os == 'Windows' && matrix.build_type == 'Release' }}
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: find
+      run: Release/antlr4_vba_benchmark.exe
 
     - name: Execute Debug on Windows
       if: ${{ runner.os == 'Windows' && matrix.build_type == 'Debug' }}
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: find
+      run: Debug/antlr4_vba_benchmark.exe
